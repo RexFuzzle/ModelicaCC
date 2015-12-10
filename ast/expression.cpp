@@ -66,6 +66,14 @@ namespace Modelica {
 
     std::ostream& operator<<(std::ostream& out, const BinOp  &b) // output
     {
+      if (b.op()==Exp) {
+        
+        if (printAsCActive (out))
+            out << "pow(" << b.left() << ", " << b.right() << ")";
+        else
+            out << "(" << b.left() << "^" << b.right() << ")";
+        return out;
+      }
       out << b.left() << BinOpTypeName[b.op()] << b.right();
       return out;
     }
@@ -80,7 +88,7 @@ namespace Modelica {
       foreach_ (P f, elseif) 
         elseif_.push_back(ExpPair(get<0>(f),get<1>(f)));
     };
-    IfExp::IfExp (Expression a, Expression b, List<ExpPair> elseif, Expression c): cond_(a), then_(b), elseexp_(c), elseif_(elseif){}
+    IfExp::IfExp (Expression a, Expression b, List<ExpPair> elseif, Expression c): cond_(a), then_(b), elseif_(elseif), elseexp_(c) {}
     bool IfExp::operator==(const IfExp & other) const {
       return other.cond()==cond() && other.then()==then() && other.elseexp() == elseexp();
     }
@@ -242,7 +250,7 @@ namespace Modelica {
     member_imp(Reference,Ref,ref);
       
     Range::Range (Expression s, Expression e): start_(s), end_(e) {};
-    Range::Range (Expression s, Expression i, Expression e): start_(s), end_(e), step_(i) {};
+    Range::Range (Expression s, Expression i, Expression e): start_(s),  step_(i), end_(e) {};
  
     std::ostream& operator<<(std::ostream& out, const Range &r) 
     {
@@ -274,6 +282,10 @@ namespace Modelica {
     std::ostream& operator<<(std::ostream& out, const Output &o) 
     {
       int l=o.args().size(),i=0;
+      if (l==1 && o.args().front() && is<Output>(o.args().front().get())) {
+            out << o.args().front().get();
+            return out;
+      }
       out << "(";
       foreach_(OptExp e, o.args()) {
         if (e) 
@@ -302,7 +314,7 @@ namespace Modelica {
       return out; 
     };
  
-    Named::Named(Name n, Expression e): exp_(), name_(n) {};
+    Named::Named(Name n, Expression e):  name_(n), exp_() {};
     std::ostream& operator<<(std::ostream& out, const Named &n) {
       out << n.name() << "=" << n.exp() ;
         return out;
@@ -362,6 +374,21 @@ namespace Modelica {
    member_imp(FunctionExp,ExpList,args);
    Boolean True(TRUE);
    Boolean False(FALSE);
+
+   long & printAsC(std::ios_base& s) {
+    static int my_index = std::ios_base::xalloc();
+    return s.iword(my_index);
+   }
+
+    long printAsCActive (std::ios_base& s) {
+        return printAsC(s);
+    }
+
+    void setCFlag(std::ios_base& s, long n) {
+        printAsC(s) = n;
+    } 
+
+
   }
 }
 

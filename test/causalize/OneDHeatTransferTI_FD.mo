@@ -1,6 +1,6 @@
 model OneDHeatTransferTI_FD
   parameter Real L = 0.2;
-  constant Integer N = 500 ;
+  constant Integer N = 1600 ;
   parameter Real T0 = 273.15;
   parameter Real TN = 330;
   parameter Real cp = 910 ;
@@ -16,7 +16,7 @@ initial algorithm
 equation
   der(T[N]) = 0;
   for i in 2:N - 1 loop
-    der(T[i]) = lambda * ((T[i + 1] - T[i]) / dx + ((-T[i]) + T[i - 1]) / dx) / cp / rho / dx;
+    der(T[i]) = der(T[i-1]) + lambda * ((T[i + 1] - T[i]) / dx + ((-T[i]) + T[i - 1]) / dx) / cp / rho / dx;
   end for;
   der(T[1]) = lambda * ((T[2] - T[1]) / dx) / cp / rho / dx;
 	annotation(

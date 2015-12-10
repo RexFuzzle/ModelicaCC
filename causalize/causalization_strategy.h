@@ -30,6 +30,7 @@ private:
   Modelica::AST::ClassList _cl;
   Modelica::AST::ExpList _all_unknowns;
   std::list<std::string> c_code;
+  int counter;
 };
 
 

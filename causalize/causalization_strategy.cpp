@@ -210,7 +210,7 @@ void CausalizationStrategy::simpleCausalizationStrategy() {
       Vertex eq = *eqIter;
       Edge e = getUniqueEdge(eq);
       Vertex unknown = target(e, _graph);
-      makeCausalBegining(_graph[eq].eq, _graph[unknown].unknown);
+      //makeCausalBegining(_graph[eq].eq, _graph[unknown].unknown);
       remove_edge(e, _graph);
       remove_vertex(eq,_graph);
       // If the unknown is in the degree1 set also remove it. This is the case where both eq and unknown have degree=1
@@ -240,7 +240,7 @@ void CausalizationStrategy::simpleCausalizationStrategy() {
       Vertex unknown = *unknownIter;
       Edge e = getUniqueEdge(unknown);
       Vertex eq = target(e, _graph);
-      makeCausalEnd(_graph[eq].eq, _graph[unknown].unknown);
+      //makeCausalEnd(_graph[eq].eq, _graph[unknown].unknown);
       remove_edge(e, _graph);
       // If the eq is in the degree1 set also remove it. This is the case where both eq and unknown have degree=1
       eqDegree1Verts.remove(eq);
@@ -314,6 +314,7 @@ void CausalizationStrategy::makeCausalMiddle() {
 
   int n_comps = apply_tarjan(_graph, components);
 
+  /*
   for (int i = 0; i < n_comps; i++) {
 
     causalize::Component component = components[i];
@@ -340,4 +341,5 @@ void CausalizationStrategy::makeCausalMiddle() {
 
     _causalEqsMiddle.insert(_causalEqsMiddle.end(), causalEqs.begin(), causalEqs.end());
   }
+  */
 }
